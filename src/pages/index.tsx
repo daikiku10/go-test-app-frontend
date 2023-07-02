@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useReducer } from 'react'
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
 import AddTask from '@/components/AddTask'
@@ -12,34 +12,97 @@ const initialTasks = [
   {id: 2, text: 'Lennon Wall pic', done: false},
 ];
 
+type Action =
+  | {
+    type: 'added';
+    id: number;
+    text: string;
+  }
+  | {
+    type: 'changed';
+    task: Task;
+  }
+  | {
+    type: 'deleted';
+    id: number;
+  };
+
+
 export default function Home() {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  // const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
   
   // 追加タスク関数
   function handleAddTask(text: string) {
-    setTasks([
-      ...tasks,
-      {
-        id: nextId++,
-        text: text,
-        done: false,
-      }
-    ])
+    dispatch({
+      type: 'added',
+      id: nextId++,
+      text: text,
+    });
+    // setTasks([
+    //   ...tasks,
+    //   {
+    //     id: nextId++,
+    //     text: text,
+    //     done: false,
+    //   }
+    // ])
   }
   // 変更タスク関数
   function handleChangeTask(task: Task) {
-    setTasks(
-      tasks.map((t) => {
-        if (t.id === task.id) {
-          return task;
-        }
-        return t;
-      })
-    )
+    dispatch({
+      type: 'changed',
+      task: task,
+    });
+    // setTasks(
+    //   tasks.map((t) => {
+    //     if (t.id === task.id) {
+    //       return task;
+    //     }
+    //     return t;
+    //   })
+    // )
   }
   // 削除タスク関数
   function handleDeleteTask(taskId: number) {
-    setTasks(tasks.filter((t) => t.id != taskId))
+    dispatch({
+      type: "deleted",
+      id: taskId,
+    });
+    // setTasks(tasks.filter((t) => t.id != taskId))
+  }
+
+  // Reducer関数
+  function tasksReducer(tasks: Task[], action: Action) {
+    switch (action.type) {
+      case 'added': {
+        console.log('追加しますよ！');
+        return [
+          ...tasks,
+          {
+            id: action.id,
+            text: action.text,
+            done: false,
+          },
+        ];
+      }
+      case 'changed': {
+        console.log('変更しますよ！');
+        return tasks.map((t) => {
+          if (t.id === action.task.id) {
+            return action.task;
+          }
+          return t;
+        });
+      }
+      case 'deleted': {
+        console.log('削除しますよ！');
+        return tasks.filter((t) => t.id !== action.id);
+      }
+      default: {
+        throw Error('Unknown action');
+      }
+    }
   }
   return (
     <>
