@@ -2,78 +2,21 @@ import { useState, useReducer } from 'react'
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
 import AddTask from '@/components/AddTask'
-import { Task } from '@/types/task'
+import { Task, TaskAction } from '@/types/task'
 import TaskList from '@/components/TaskList'
+import { TasksContext, TasksDispatchContext } from '@/context/TasksContext'
 
-let nextId = 3;
 const initialTasks = [
   {id: 0, text: 'Visit Kafka Museum', done: true},
   {id: 1, text: 'Watch a puppet show', done: false},
   {id: 2, text: 'Lennon Wall pic', done: false},
 ];
 
-type Action =
-  | {
-    type: 'added';
-    id: number;
-    text: string;
-  }
-  | {
-    type: 'changed';
-    task: Task;
-  }
-  | {
-    type: 'deleted';
-    id: number;
-  };
-
-
 export default function Home() {
-  // const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
   
-  // 追加タスク関数
-  function handleAddTask(text: string) {
-    dispatch({
-      type: 'added',
-      id: nextId++,
-      text: text,
-    });
-    // setTasks([
-    //   ...tasks,
-    //   {
-    //     id: nextId++,
-    //     text: text,
-    //     done: false,
-    //   }
-    // ])
-  }
-  // 変更タスク関数
-  function handleChangeTask(task: Task) {
-    dispatch({
-      type: 'changed',
-      task: task,
-    });
-    // setTasks(
-    //   tasks.map((t) => {
-    //     if (t.id === task.id) {
-    //       return task;
-    //     }
-    //     return t;
-    //   })
-    // )
-  }
-  // 削除タスク関数
-  function handleDeleteTask(taskId: number) {
-    dispatch({
-      type: "deleted",
-      id: taskId,
-    });
-    // setTasks(tasks.filter((t) => t.id != taskId))
-  }
-
   // Reducer関数
-  function tasksReducer(tasks: Task[], action: Action) {
+  function tasksReducer(tasks: Task[], action: TaskAction) {
     switch (action.type) {
       case 'added': {
         console.log('追加しますよ！');
@@ -114,12 +57,13 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1>Prague itinerary</h1>
-        <AddTask onAddTask={handleAddTask} />
-        <TaskList
-          tasks={tasks}
-          onChangeTask={handleChangeTask}
-          onDeleteTask={handleDeleteTask}
-        />
+
+        <TasksContext.Provider value={tasks}>
+          <TasksDispatchContext.Provider value={dispatch}>
+            <AddTask />
+            <TaskList />
+          </TasksDispatchContext.Provider>
+        </TasksContext.Provider>
       </main>
     </>
   )
