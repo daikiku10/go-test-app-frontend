@@ -17,6 +17,7 @@ export default function AddTask() {
       <button
         onClick={() => {
           setText('');
+          dispatch &&
           dispatch({
             type: 'added',
             id: nextId++,

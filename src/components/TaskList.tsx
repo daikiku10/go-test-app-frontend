@@ -29,7 +29,7 @@ function Task({task}: TaskProps) {
         <input
           value={task.text}
           onChange={(e) => {
-            dispatch({
+            dispatch && dispatch({
               type: 'changed',
               task: {
                 ...task,
@@ -55,18 +55,18 @@ function Task({task}: TaskProps) {
         type="checkbox"
         checked={task.done}
         onChange={(e) => {
-          dispatch({
+          dispatch && dispatch({
             type: 'changed',
             task: {
               ...task,
-              text: e.target.value
+              done: e.target.checked
             }
           })
         }}
       />
       {taskContent}
       <button onClick={() => {
-        dispatch({
+        dispatch && dispatch({
           type: 'deleted',
           id: task.id
         })
