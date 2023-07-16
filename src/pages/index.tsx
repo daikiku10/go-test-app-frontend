@@ -1,52 +1,17 @@
-import { useState, useReducer } from 'react'
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
-import AddTask from '@/components/AddTask'
-import { Task, TaskAction } from '@/types/task'
-import TaskList from '@/components/TaskList'
-import { TasksContext, TasksDispatchContext } from '@/context/TasksContext'
-
-const initialTasks = [
-  {id: 0, text: 'Visit Kafka Museum', done: true},
-  {id: 1, text: 'Watch a puppet show', done: false},
-  {id: 2, text: 'Lennon Wall pic', done: false},
-];
+import axios from 'axios';
 
 export default function Home() {
-  const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
-  
-  // Reducer関数
-  function tasksReducer(tasks: Task[], action: TaskAction) {
-    switch (action.type) {
-      case 'added': {
-        console.log('追加しますよ！');
-        return [
-          ...tasks,
-          {
-            id: action.id,
-            text: action.text,
-            done: false,
-          },
-        ];
-      }
-      case 'changed': {
-        console.log('変更しますよ！');
-        return tasks.map((t) => {
-          if (t.id === action.task.id) {
-            return action.task;
-          }
-          return t;
-        });
-      }
-      case 'deleted': {
-        console.log('削除しますよ！');
-        return tasks.filter((t) => t.id !== action.id);
-      }
-      default: {
-        throw Error('Unknown action');
-      }
-    }
+
+  const clickHandler = () => {
+    console.log('押下した。');
+
+    axios.get('http://localhost:8080/test1').then(res => {
+      console.log('結果：', res)
+    })
   }
+  
   return (
     <>
       <Head>
@@ -57,13 +22,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1>Prague itinerary</h1>
-
-        <TasksContext.Provider value={tasks}>
-          <TasksDispatchContext.Provider value={dispatch}>
-            <AddTask />
-            <TaskList />
-          </TasksDispatchContext.Provider>
-        </TasksContext.Provider>
+        <button onClick={() => clickHandler()}>ボタン</button>
       </main>
     </>
   )
