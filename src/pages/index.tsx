@@ -11,6 +11,15 @@ export default function Home() {
       console.log('結果：', res)
     })
   }
+
+  const registerUser = () => {
+    console.log('押下した。');
+
+    axios.post('http://localhost:8080/api/v1/user').then(res => {
+      console.log('結果：', res)
+    })
+  }
+
   
   return (
     <>
@@ -23,6 +32,7 @@ export default function Home() {
       <main className={styles.main}>
         <h1>Prague itinerary</h1>
         <button onClick={() => clickHandler()}>ボタン</button>
+        <button onClick={() => registerUser()}>ユーザー登録ボタン</button>
       </main>
     </>
   )
