@@ -20,6 +20,14 @@ export default function Home() {
     })
   }
 
+  const registerTemporaryUser = () => {
+    console.log('押下した。');
+
+    axios.post('http://localhost:8080/api/v1/temporary_user').then(res => {
+      console.log('結果：', res)
+    })
+  }
+
   
   return (
     <>
@@ -33,6 +41,7 @@ export default function Home() {
         <h1>Prague itinerary</h1>
         <button onClick={() => clickHandler()}>ボタン</button>
         <button onClick={() => registerUser()}>ユーザー登録ボタン</button>
+        <button onClick={() => registerTemporaryUser()}>仮ユーザー登録ボタン</button>
       </main>
     </>
   )
