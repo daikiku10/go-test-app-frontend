@@ -1,6 +1,5 @@
-import Axios, { InternalAxiosRequestConfig, AxiosHeaders, AxiosResponse } from "axios";
+import Axios, { InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { API_URL } from "@/config/config";
-import { error } from "console";
 
 
 /**
@@ -19,8 +18,6 @@ function authRequestInterceptor(config: InternalAxiosRequestConfig) {
   }
 
   config.headers.Accept = "application/json";
-  // config.headers["Content-Type"] = "multipart/form-data";
-  // config.headers["Content-Type"] = "application/json";
   return config;
 }
 
