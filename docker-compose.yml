@@ -11,3 +11,9 @@ services:
     stdin_open: true
     tty: true #コンテナが正常終了してもコンテナを継続させる
     command: npm run dev
+    networks:
+      - mynetwork
+networks:
+  mynetwork:
+    external: true
+
