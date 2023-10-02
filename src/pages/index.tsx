@@ -1,34 +1,9 @@
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
-import axios from 'axios';
+import { clickHandler } from '@/public/scripts/test';
+import { SuccessResponse, axios } from '@/lib/axios';
 
-export default function Home() {
-
-  const clickHandler = () => {
-    console.log('押下した。');
-
-    axios.get('http://localhost:8080/test1').then(res => {
-      console.log('結果：', res)
-    })
-  }
-
-  const registerUser = () => {
-    console.log('押下した。');
-
-    axios.post('http://localhost:8080/api/v1/user').then(res => {
-      console.log('結果：', res)
-    })
-  }
-
-  const registerTemporaryUser = () => {
-    console.log('押下した。');
-
-    axios.post('http://localhost:8080/api/v1/temporary_user').then(res => {
-      console.log('結果：', res)
-    })
-  }
-
-  
+export default function Home({ initialData }: {initialData: string}) {
   return (
     <>
       <Head>
@@ -39,10 +14,18 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1>Prague itinerary</h1>
+        <p>{ initialData }</p>
         <button onClick={() => clickHandler()}>ボタン</button>
-        <button onClick={() => registerUser()}>ユーザー登録ボタン</button>
-        <button onClick={() => registerTemporaryUser()}>仮ユーザー登録ボタン</button>
       </main>
     </>
   )
+}
+
+export async function getServerSideProps() {
+  const response = await axios.get<SuccessResponse<{ temporaryUserId: string }>>('http://app:8080/test1')
+  return {
+    props: {
+      initialData: response.data.data.temporaryUserId,
+    }
+  };
 }
